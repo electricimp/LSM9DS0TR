@@ -7,6 +7,8 @@
 
 class LSM9DS0 {
     
+    static version = [1, 1, 1];
+    
     static WHO_AM_I_G       = 0x0F;
     static CTRL_REG1_G      = 0x20;
     static CTRL_REG2_G      = 0x21;
@@ -100,12 +102,20 @@ class LSM9DS0 {
     _temp_enabled = null;
     
     // -------------------------------------------------------------------------
-    constructor(i2c, xm_addr = 0x3A, g_addr = 0xD4) {
+    constructor(i2c, xm_addr = 0x3C, g_addr = 0xD4) {
         _i2c = i2c;
         _xm_addr = xm_addr;
         _g_addr = g_addr;
         
         _temp_enabled = false;
+
+        // check WHO_AM_I
+        if (getDeviceId_G() != 0xD4) {
+            throw "Gyro not found";
+        }
+        if (getDeviceId_XM() != 0x49) {
+            throw "XM Not found";
+        }
 
         init();
     }
