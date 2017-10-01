@@ -1022,7 +1022,7 @@ class LSM9DS0 {
     }
     
     // -------------------------------------------------------------------------
-    // Calculate tilt-corrected heading from magnetometer X and Y
+    // Calculate tilt-uncorrected heading from magnetometer X and Y
     // Returns magnetic heading in degrees.
     function getHdg() {
       
