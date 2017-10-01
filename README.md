@@ -226,6 +226,29 @@ server.log("Y axis: " + accel.y)
 server.log("Y axis: " + accel.z)
 ```
 
+#### getHdg()
+Reads and returns approximate magnetic heading, uncorrected for tilt or local variation, in degrees. Magnetometer must be enabled with a nonzero data rate. Your mileage may vary. 
+
+```Squirrel
+imu.setDatarate_M(1); // 1 Hz - nearest supported rate is 3.125 Hz 
+imu.setModeCont_M(); // enable continuous measurement
+
+server.log(format("Hdg: %0.2fº Mag", imu.getHdg()));
+```
+
+#### getAttitude()
+Reads and returns pitch and roll. Pitch and Roll are both -PI/2 (-180 degrees) to PI/2 (180 degrees). Positive Pitch is counterclockwise rotation about the positive X axis. Positive Roll is counterclockwise rotation about the positive Y axis. Accelerometer must be enabled with a nonzero data rate. 
+
+```Squirrel
+imu.setEnable_A(1);
+imu.setDatarate_A(1);
+
+server.log(format("Pitch: %0.2fº, Roll: %0.2fº",
+  attitude.pitch * (180.0 / PI), 
+  attitude.roll * (180.0 / PI)));
+```
+
+
 #### getTemp()
 Reads and returns the latest measurement from the temperature sensor in degrees Celsius. Note that the on-chip temperature can differ from the ambient temperature by a significant amount. In bare-board tests, enabling the gyro increased the value returned by *getTemp()* by over 6 degrees Celsius. 
 

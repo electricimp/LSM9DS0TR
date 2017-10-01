@@ -88,7 +88,7 @@ class LSM9DS0 {
     static TIME_WINDOW      = 0x3D;
     static Act_THS          = 0x3E;
     static Act_DUR          = 0x3F;
-    
+
     _i2c        = null;
     _xm_addr    = null;
     _g_addr     = null;
@@ -1002,6 +1002,38 @@ class LSM9DS0 {
         result.z = (result.z / 32000.0) * RANGE_ACCEL;
         
         return result;
+    }
+    
+    // -------------------------------------------------------------------------
+    // Calculate Attitude (Pitch and Roll in radians)
+    // Returns a table {pitch: <data>, roll: <data>}
+    // Pitch and Roll are both -PI/2 (-180 degrees) to PI/2 (180 degrees)
+    // Positive Pitch is counterclockwise rotation about the positive X axis
+    // Positive Roll is counterclockwise rotation about the positive Y axis
+    function getAttitude() {
+
+        local accel = getAccel();
+        local result = {};
+        
+        result.roll <- math.atan2(accel.y , accel.z);
+        result.pitch <- math.atan(-1.0 * accel.x, (accel.y * math.sin(result.roll) + accel.z * math.sin(result.roll)));
+
+        return result;
+    }
+    
+    // -------------------------------------------------------------------------
+    // Calculate tilt-corrected heading from magnetometer X and Y
+    // Returns magnetic heading in degrees.
+    function getHdg() {
+      
+        local mag_raw = getMag();
+        local hdg = 180 * math.atan2(mag_raw.y, mag_raw.x) / PI;
+
+        if (hdg < 0) {
+            hdg += 360;
+        }
+
+        return hdg;
     }
 
 }
